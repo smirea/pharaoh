@@ -10,10 +10,6 @@ export default class ConsoleRenderer extends AbstractRenderer {
         let matrix = [];
         const styles = [];
 
-        const get_units = (x, y) => {
-            return world.units.filter(({pos}) => pos[0] === x && pos[1] === y);
-        }
-
         for (let row = -1; row < world.height; ++row) {
             const tmp = []
             for (let col = -1; col < world.width; ++col) {
@@ -30,7 +26,7 @@ export default class ConsoleRenderer extends AbstractRenderer {
                         }
                     }
                 } else {
-                    const units = get_units(col, row);
+                    const units = this.get_units([col, row]);
                     if (units.length) {
                         char = units.length;
                         bg = units[units.length - 1].constructor.COLOR;

@@ -12,7 +12,7 @@ import {Policeman} from 'classes/PoliceStation';
 
 const engine = new Engine({
     fps: 30,
-    renderer: 'console',
+    renderer: 'dom',
     world: {
         width: 12,
         height: 14,
@@ -51,7 +51,10 @@ const setupPlain = () => {
 };
 
 setupPlain();
+
+engine.renderer.setupDOM(document.body);
 engine.render();
+
 // window.interval = setInterval(() => {engine.step();}, 250);
 
 window.engine = engine;

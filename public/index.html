@@ -2,10 +2,43 @@
 <html>
 <head>
     <title>Pharaos</title>
+    <style type="text/css">
+        * {
+            box-sizing: border-box;
+            font-family: courier;
+        }
+
+        .world {
+            display: inline-flex;
+            flex-direction: column;
+            border: 1px solid #ccc;
+        }
+
+        .world-row {
+            display: flex;
+        }
+
+        .world-row + .world-row {
+            border-top: 1px solid #ccc;
+        }
+
+        .world-cell {
+            display: flex;
+            width: 20px;
+            height: 20px;
+            justify-content: center;
+            align-items: center;
+            font-size: 11px;
+            color: #eee;
+        }
+
+        .world-cell + .world-cell {
+            border-left: 1px solid #ccc;
+        }
+    </style>
 </head>
 <body>
 
 </body>
-    <h3>Open the console</h3>
     <script src="/build/main.js" type="text/javascript"></script>
 </html>
