@@ -21,7 +21,7 @@ export default class World {
     data: Array<Array<Entity>>;
     width: number;
     height: number;
-    layers: Array<Layer>;
+    layers: Array<Layer<*>>;
     layer_map: layer_map_t;
     units: Array<Unit>;
 
@@ -37,7 +37,7 @@ export default class World {
         this.layers.forEach(({key, map}) => this.layer_map[key] = map);
     }
 
-    build_layer (key:$Keys<layer_map_t>, value:any) : Layer {
+    build_layer (key:$Keys<layer_map_t>, value:any) : Layer<*> {
         const result = {key, map: []};
         for (let index = 0; index < this.height; ++index) {
             const row = [];

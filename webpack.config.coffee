@@ -45,7 +45,7 @@ module.exports =
     debug: true
     devtool: 'source-map'
     output:
-        path: __dirname + '/public'
+        path: __dirname + '/public/build'
         filename: '[name].js'
         pathinfo: true
     resolve:

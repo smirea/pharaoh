@@ -1,6 +1,6 @@
 
 # Build output folders
-build/
+public/build
 node_modules
 
 # Logs

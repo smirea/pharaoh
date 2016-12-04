@@ -41,6 +41,6 @@ engine.world.add_entity([3, 3], HouseIndex.SmallHouse);
 engine.world.add_unit(new Policeman(engine.world, [3, 4]));
 engine.world.add_unit(new Policeman(engine.world, [5, 8]));
 engine.world.print();
-window.interval = setInterval(() => {engine.step();}, 250);
+// window.interval = setInterval(() => {engine.step();}, 250);
 
 window.engine = engine;
