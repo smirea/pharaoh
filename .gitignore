@@ -1,0 +1,10 @@
+
+# Build output folders
+build/
+node_modules
+
+# Logs
+*.log
+
+# Editors
+*.sublime-workspace
