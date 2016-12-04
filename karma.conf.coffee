@@ -74,7 +74,7 @@ Generates a list of file paths that Karma should load. Order is important.
 Details: http://karma-runner.github.io/0.13/config/files.html
 ###
 getFileList = -> [
-        pattern: 'public/test.js'
+        pattern: 'public/build/test.js'
         nocache: true
     ]
 
