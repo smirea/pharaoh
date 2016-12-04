@@ -104,60 +104,7 @@ export default class World {
         this.units.forEach((unit) => {
             unit.step();
         });
-        console.clear();
-        this.print();
     }
 
-    print () : World {
-        let matrix = [];
-        const styles = [];
 
-        const get_units = (x, y) => {
-            return this.units.filter(({pos}) => pos[0] === x && pos[1] === y);
-        }
-
-        for (let row = -1; row < this.height; ++row) {
-            const tmp = []
-            for (let col = -1; col < this.width; ++col) {
-                let bg = 'red';
-                let char = ' ';
-
-                if (row === -1 || col === -1) {
-                    bg = 'black'
-                    if (row !== col) {
-                        if (row === -1) {
-                            char = col % 10;
-                        } else {
-                            char = row % 10;
-                        }
-                    }
-                } else {
-                    const units = get_units(col, row);
-                    if (units.length) {
-                        char = units.length;
-                        bg = units[units.length - 1].constructor.COLOR;
-                    } else {
-                        for (let index = this.layers.length - 1; index >= 0; --index) {
-                            const obj = this.layers[index].map[row][col];
-                            if (obj) {
-                                bg = obj.constructor.COLOR;
-                                break;
-                            }
-                        }
-                    }
-                }
-                tmp.push(`%c${char}`);
-                styles.push(`
-                    color: #eee;
-                    background: ${bg};
-                    border-left: 1px solid #aaa;
-                    text-decoration: underline;
-                `);
-            }
-            matrix.push(tmp.join(' '));
-        }
-        matrix = matrix.join('\n');
-        console.log(matrix, ...styles);
-        return this;
-    }
 }
