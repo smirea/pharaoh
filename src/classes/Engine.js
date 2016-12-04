@@ -34,13 +34,47 @@ export default class Engine {
         this.renderer = new renderCls(this);
     }
 
+    setupDOM (root) {
+        const container = document.createElement('div');
+        container.classList.add('engine');
+        container.engine = this;
+        root.appendChild(container);
+        this.setupControlls(container);
+        this.renderer.setupDOM(container);
+        return container;
+    }
+
+    setupControlls (root) {
+        const btn = (text, handler) => {
+            const elem = document.createElement('button');
+            elem.innerHTML = text;
+            elem.addEventListener('click', handler);
+            return elem;
+        }
+
+        let interval = null;
+        const step = () => this.step();
+        const stop = () => clearInterval(interval);
+        const run = () => {
+            stop();
+            interval = setInterval(step, 200);
+        };
+
+        const container = document.createElement('div');
+        container.classList.add('actions');
+        root.appendChild(container);
+
+        container.appendChild(btn('step', step));
+        container.appendChild(btn('run', run));
+        container.appendChild(btn('stop', stop));
+    }
+
     start () {}
 
     stop () {}
 
     step ({render = true} : {render: bool} = {}) {
         this.world.step();
-        console.log(render)
         if (render) this.render();
     }
 
