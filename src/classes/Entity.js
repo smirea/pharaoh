@@ -1,5 +1,7 @@
 /* @flow */
 
+import type World from './World';
+
 export default class Entity {
 
     static COLOR = 'black';
@@ -25,7 +27,7 @@ export default class Entity {
     static can_add_to_world (world:World, [x, y]:Coordinate) : ?string {
         for (let row = 0; row < this.HEIGHT; ++row) {
             for (let col = 0; col < this.WIDTH; ++col) {
-                if (world.layer_map.entity[y + row][x + col]) return `Needs to be placed on an empty tile`;
+                if (world.layer_map.entity.get([x + col, y + row])) return `Needs to be placed on an empty tile`;
             }
         }
         return null;

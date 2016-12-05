@@ -34,17 +34,17 @@ export default class Engine {
         this.renderer = new renderCls(this);
     }
 
-    setupDOM (root) {
+    setupDOM (root: HTMLElement) {
         const container = document.createElement('div');
         container.classList.add('engine');
-        container.engine = this;
+        // container.engine = this;
         root.appendChild(container);
         this.setupControlls(container);
         this.renderer.setupDOM(container);
         return container;
     }
 
-    setupControlls (root) {
+    setupControlls (root: HTMLElement) {
         const btn = (text, handler) => {
             const elem = document.createElement('button');
             elem.innerHTML = text;
@@ -54,7 +54,7 @@ export default class Engine {
 
         let interval = null;
         const step = () => this.step();
-        const stop = () => clearInterval(interval);
+        const stop = () => interval != null ? clearInterval(interval) : null;
         const run = () => {
             stop();
             interval = setInterval(step, 200);

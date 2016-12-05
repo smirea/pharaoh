@@ -1,20 +1,18 @@
 /* @flow */
 
-import Entity from 'classes/Entity';
-import Unit from 'classes/Unit';
-import Tile from 'classes/tiles/Tile';
+import type Entity from 'classes/Entity';
+import type Tile from 'classes/tiles/Tile';
+import type Unit from 'classes/Unit';
+// import type {Graph} from '../lib/AStar';
+
 import DirtTile from 'classes/tiles/DirtTile';
 import {DIR} from 'utils/constants';
 
-type Layer<T> = {
-    key: string,
-    map: Array<Array<T>>
-};
 
 type layer_map_t = $Shape<{
-    tile: Array<Array<Tile>>,
-    entity: Array<Array<Entity>>,
-}>
+    tile: Layer<?Tile>,
+    entity: Layer<?Entity>,
+}>;
 
 export default class World {
 
@@ -22,32 +20,37 @@ export default class World {
     width: number;
     height: number;
     layers: Array<Layer<*>>;
-    layer_map: layer_map_t;
     units: Array<Unit>;
+
+    // TODO: figure out why this is not working
+    // layer_map: layer_map_t;
+    layer_map: {
+        tile: Layer<*>,
+        entity: Layer<*>,
+    }
+
+    // // Everything that is not an unpassable entity is stored here
+    // search_graph: Graph;
+
+    // // This is only a graph of the roads
+    // road_search_graph: Graph;
 
     constructor (width:number, height:number) {
         this.width = width;
         this.height = height;
         this.units = [];
-        this.layers = [
-            this.build_layer('tile', () => new DirtTile()),
-            this.build_layer('entity', null),
-        ];
-        this.layer_map = {};
-        this.layers.forEach(({key, map}) => this.layer_map[key] = map);
+
+        this.layer_map = {
+            tile: new Layer(this.width, this.height, 'tile', () => new DirtTile()),
+            entity: new Layer(this.width, this.height, 'entity', () => null),
+        };
+
+        this.layers = [this.layer_map.tile, this.layer_map.entity];
     }
 
-    build_layer (key:$Keys<layer_map_t>, value:any) : Layer<*> {
-        const result = {key, map: []};
-        for (let index = 0; index < this.height; ++index) {
-            const row = [];
-            for (let col_index = 0; col_index < this.width; ++col_index) {
-                row.push(typeof value === 'function' ? value(index, col_index) : value);
-            }
-            result.map.push(row);
-        }
-        return result;
-    }
+    // update_search_graphs () {
+
+    // }
 
     is_out_of_bounds ([x, y]:Coordinate) : boolean {
         return x < 0 || x >= this.width || y < 0 || y >= this.height;
@@ -77,7 +80,7 @@ export default class World {
         const instance = new klass(this, pos);
         for (let row = 0; row < klass.HEIGHT; ++row) {
             for (let col = 0; col < klass.WIDTH; ++col) {
-                this.layer_map.entity[y + row][x + col] = instance;
+                this.layer_map.entity.set([x + col, y + row], instance);
             }
         }
         instance.on_add_to_world(this, pos);
@@ -106,5 +109,54 @@ export default class World {
         });
     }
 
+}
+
+class Layer<T> {
+
+    width: number;
+    height: number;
+    key: $Keys<layer_map_t>;
+    getDefaultValue: (x: number, y: number) => ?T;
+
+    map: Array<Array<?T>>;
+
+    constructor (
+        width: number,
+        height: number,
+        key: $Keys<layer_map_t>,
+        getDefaultValue: (x: number, y: number) => ?T
+    ) {
+        this.width = width;
+        this.height = height;
+        this.key = key;
+        this.getDefaultValue = getDefaultValue;
+        this.init();
+    }
+
+    init () {
+        this.map = [];
+
+        for (let index = 0; index < this.height; ++index) {
+            const row = [];
+            for (let col_index = 0; col_index < this.width; ++col_index) {
+                row.push(this.getDefaultValue(index, col_index));
+            }
+            this.map.push(row);
+        }
+    }
+
+    is_out_of_bounds ([x, y]:Coordinate) : boolean {
+        return x < 0 || x >= this.width || y < 0 || y >= this.height;
+    }
+
+    get ([x, y]: Coordinate) : ?T {
+        if (this.is_out_of_bounds([x, y])) return null;
+        return this.map[y][x];
+    }
+
+    set ([x, y]: Coordinate, value: ?T) {
+        if (this.is_out_of_bounds([x, y])) return;
+        this.map[y][x] = value;
+    }
 
 }

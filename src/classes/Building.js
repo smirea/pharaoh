@@ -9,7 +9,7 @@ export default class Building extends Entity {
         const [x, y] = this.pos;
         let result = null;
         this.each_adjacent(1, (x, y) => {
-            const entity = this.world.layer_map.entity[y][x];
+            const entity = this.world.layer_map.entity.get([x, y]);
             if (entity instanceof Road) {
                 result = entity;
                 return false;

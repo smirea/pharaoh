@@ -5,6 +5,10 @@ import Road from 'classes/infrastructure/Road';
 import {DIR} from 'utils/constants';
 import {move, get_distance} from 'utils/path';
 
+type behavior =
+    | 'wander'
+    | 'target';
+
 export default class Unit extends Entity {
 
     static COLOR:string = 'black';
@@ -12,10 +16,12 @@ export default class Unit extends Entity {
     static EFFECT_RADIUS:number = 2;
 
     direction: number;
+    behavior: behavior = 'wander';
+    target: ?Entity = null;
 
     is_road (pos:Coordinate) : boolean {
         if (this.world.is_out_of_bounds(pos)) return false;
-        return this.world.layer_map.entity[pos[1]][pos[0]] instanceof Road;
+        return this.world.layer_map.entity.get(pos) instanceof Road;
     }
 
     get_road_directions () : Array<number> {
@@ -30,7 +36,7 @@ export default class Unit extends Entity {
     get_affected_entities () : Array<Entity> {
         const result = [];
         this.each_adjacent(this.constructor.EFFECT_RADIUS, (x, y) => {
-            const entity = this.world.layer_map.entity[y][x];
+            const entity = this.world.layer_map.entity.get([x, y]);
             if (entity) result.push(entity);
         });
         return result;
