@@ -1,22 +1,34 @@
-[ignore]
-.*/node_modules/.*
-.*/public/.*
-
 [include]
 
+[ignore]
+.*/public/.*
+.*/node_modules/.*
+
+# Including these causes issues
+.*/node_modules/fbjs/.*
+.*/node_modules/flow-remove-types/.*
+.*/node_modules/flow-coverage-report/.*
+
+# .*/node_modules/.*
+
 [libs]
+
+# Official "flow-typed" repository definitions.
+flow-typed/npm
+
 src/interfaces/
 
 [options]
 
-esproposal.class_instance_fields=ignore
-esproposal.class_static_fields=ignore
+# esproposal.class_instance_fields=ignore
+# esproposal.class_static_fields=ignore
 
-munge_underscores=true
-suppress_comment=.*\\$FlowFixMe.*
 module.name_mapper='.*.\(css\)' -> 'empty'
 # module.system=haste
-strip_root=true
+# strip_root=true
 
 module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
+
+[version]
+0.36.0

@@ -21,7 +21,7 @@ export default class Unit extends Entity {
 
     is_road (pos:Coordinate) : boolean {
         if (this.world.is_out_of_bounds(pos)) return false;
-        return this.world.layer_map.entity.get(pos) instanceof Road;
+        return this.world.getNature(pos) instanceof Road;
     }
 
     get_road_directions () : Array<number> {
@@ -36,7 +36,7 @@ export default class Unit extends Entity {
     get_affected_entities () : Array<Entity> {
         const result = [];
         this.each_adjacent(this.constructor.EFFECT_RADIUS, (x, y) => {
-            const entity = this.world.layer_map.entity.get([x, y]);
+            const entity = this.world.getBuilding([x, y]);
             if (entity) result.push(entity);
         });
         return result;
@@ -93,8 +93,4 @@ export default class Unit extends Entity {
     step_act () {
         this.apply_effects();
     }
-
-    on_add_to_world () {}
-
-    on_remove_from_world () {}
 }

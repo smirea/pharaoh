@@ -22,6 +22,7 @@ const init = () => {
     setupPlain(e1);
     e1.setupDOM(document.body);
     e1.render();
+    window.e1 = e1;
 
     const e2 = new Engine({
         fps: 30,
@@ -34,6 +35,7 @@ const init = () => {
     setupIntersection(e2);
     e2.setupDOM(document.body);
     e2.render();
+    window.e2 = e2;
 };
 
 const road = (w:World, pos:Coordinate, direction:number, size:number) : Coordinate => {
@@ -55,16 +57,16 @@ const setupIntersection = engine => {
     roadChain(engine.world, [5, 5], [DIR.DOWN, 5]);
     roadChain(engine.world, [3, 7], [DIR.RIGHT, 2]);
     roadChain(engine.world, [6, 7], [DIR.RIGHT, 2]);
-    engine.world.add_entity([3, 3], HouseIndex.SmallHouse);
-    engine.world.add_entity([5, 2], HouseIndex.MediumHouse);
-    engine.world.add_entity([8, 0], HouseIndex.LargeHouse);
-    engine.world.add_unit(new Policeman(engine.world, [3, 4]));
-    engine.world.add_unit(new Policeman(engine.world, [5, 8]));
+    engine.world.add(HouseIndex.SmallHouse, [3, 3]);
+    engine.world.add(HouseIndex.MediumHouse, [5, 2]);
+    engine.world.add(HouseIndex.LargeHouse, [8, 0]);
+    engine.world.add(Policeman, [3, 4]);
+    engine.world.add(Policeman, [5, 8]);
 };
 
 const setupPlain = engine => {
-    roadChain(engine.world, [4, 4], [DIR.DOWN, 5], [DIR.RIGHT, 2], [DIR.LEFT, 4]);
-    engine.world.add_unit(new Policeman(engine.world, [4, 4]));
+    roadChain(engine.world, [4, 4], [DIR.DOWN, 5], [DIR.RIGHT, 2], [DIR.UP, 4], [DIR.LEFT, 1]);
+    engine.world.add(Policeman, [4, 4]);
 };
 
 init();

@@ -11,8 +11,8 @@ export default class AbstractRenderer {
         this.engine = engine;
     }
 
-    get_units ([x, y]: Coordinate) : Array<Unit> {
-        return this.engine.world.units.filter(({pos}) => pos[0] === x && pos[1] === y);
+    get_units (pos: Coordinate) : Array<Unit> {
+        return this.engine.world.layer_map.unit.get_all(pos);
     }
 
     setupDOM (root: HTMLElement) {

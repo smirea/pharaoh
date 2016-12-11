@@ -2,17 +2,25 @@
 
 import type World from './World';
 
+import {getUID} from '../utils/utils';
+
+(x: Entity) => (x: WorldItem);
+(x: Class<Entity>) => (x: WorldItemConstructor);
 export default class Entity {
 
     static COLOR = 'black';
     static WIDTH = 1;
     static HEIGHT = 1;
 
+    UID: string;
+
     pos:Coordinate;
     world:World;
     stats:{[key: $Keys<Stats>]: number};
 
     constructor (world:World, pos:Coordinate) {
+        this.UID = getUID();
+
         this.pos = pos;
         this.world = world;
 
@@ -24,16 +32,13 @@ export default class Entity {
         };
     }
 
-    static can_add_to_world (world:World, [x, y]:Coordinate) : ?string {
-        for (let row = 0; row < this.HEIGHT; ++row) {
-            for (let col = 0; col < this.WIDTH; ++col) {
-                if (world.layer_map.entity.get([x + col, y + row])) return `Needs to be placed on an empty tile`;
-            }
-        }
-        return null;
+    static can_add_to_world (world:World, [x, y]:Coordinate) : boolean {
+        return true;
     }
 
-    on_add_to_world (world:World, [x, y]:Coordinate) : void {}
+    on_add_to_world () : void {}
+
+    on_remove_from_world () : void {}
 
     add_stat (stat:$Keys<Stats>, value:number) {
         this.stats[stat] += value;

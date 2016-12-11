@@ -1,5 +1,6 @@
+/* @flow */
 
-import World from '../classes/World';
+import type World from '../classes/World';
 
 declare type Coordinate = [number, number];
 
@@ -9,3 +10,18 @@ declare type Stats = $Shape<{
     damage: number,
     crime: number,
 }>;
+
+declare interface WorldItem {
+    UID: string;
+    on_add_to_world (World, Coordinate) : void;
+}
+
+declare interface WorldItemConstructor {
+    COLOR: string;
+    WIDTH: number;
+    HEIGHT: number;
+
+    constructor (World, Coordinate) : any;
+
+    can_add_to_world (World, Coordinate) : boolean;
+}

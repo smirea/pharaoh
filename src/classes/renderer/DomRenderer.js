@@ -55,7 +55,7 @@ export default class DomRenderer extends AbstractRenderer {
                         bg = units[units.length - 1].constructor.COLOR;
                     } else {
                         for (let index = world.layers.length - 1; index >= 0; --index) {
-                            const obj = world.layers[index].map[row][col];
+                            const obj = world.layers[index].get([col, row]);
                             if (obj) {
                                 bg = obj.constructor.COLOR;
                                 break;
