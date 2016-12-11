@@ -5,7 +5,7 @@ import Road from 'classes/infrastructure/Road';
 import {DIR} from 'utils/constants';
 import {move, get_distance, pos_equal} from 'utils/path';
 
-import AStar from '../lib/AStar';
+import AStar from 'javascript-astar';
 
 type behavior =
     | 'wander'

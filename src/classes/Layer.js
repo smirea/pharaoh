@@ -6,7 +6,7 @@ import Road from './infrastructure/Road';
 import Building from './Building';
 import Unit from './Unit';
 
-import {Graph} from '../lib/AStar';
+import {Graph} from 'javascript-astar';
 
 type layerEnum = 'tile' | 'nature' | 'building' | 'unit';
 

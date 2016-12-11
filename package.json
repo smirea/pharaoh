@@ -15,6 +15,7 @@
     "babel-polyfill": "^6.3.14",
     "babel-runtime": "^6.3.13",
     "express": "^4.13.3",
+    "javascript-astar": "^0.4.1",
     "phantomjs": "^1.9.19"
   },
   "devDependencies": {
