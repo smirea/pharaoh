@@ -28,10 +28,8 @@ declare interface WorldItemConstructor {
 
 declare interface EventEmitter {
     _eventListeners: Object;
-
-    on (string, function) : () => void;
-
-    off (string, function) : void;
-
-    trigger (string, Array<mixed>) : void;
+    on: (string, Function) => void;
+    off: (string, Function) => void;
+    trigger: (string) => void;
+    trigger: (string, Array<mixed>) => void;
 };

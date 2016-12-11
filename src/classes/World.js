@@ -52,7 +52,7 @@ export default class World {
         ];
     }
 
-    add (klass: Class<Tile | Entity>, pos: Coordinate) : Tile | Entity {
+    add <T: Tile | Entity> (klass: Class<T>, pos: Coordinate) : T {
         const instance = new klass(this, pos);
         let layer = null;
         for (let index = this.layers.length - 1; index >= 0; --index) {

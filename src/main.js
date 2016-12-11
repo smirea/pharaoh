@@ -64,16 +64,17 @@ const setupWalk = engine => {
     const {world} = engine;
 
     roadChain(world, [2, 6], 'down 4', 'right 4', 'up 3', 'right 4', 'up 3', 'left 8', 'down 2');
-    window.unit = world.add(Policeman, [2, 6]);
+    const unit = window.unit = world.add(Policeman, [2, 6]);
     const h1 = world.add(HouseIndex.SmallHouse, [10, 2]);
     const h2 = world.add(HouseIndex.SmallHouse, [11, 6]);
     const h3 = world.add(HouseIndex.SmallHouse, [7, 9]);
+    const dom = engine.renderer.element;
 
     engine.on('render', () => {
-        const setText = (cell: Entity, val) => {
+        const setText = (cell: any, val) => {
             const [x, y] = cell.pos;
             if (!engine.renderer.element) return;
-            const target = engine.renderer.element.querySelector(`[data-row="${y}"][data-column="${x}"]`);
+            const target = dom.querySelector(`[data-row="${y}"][data-column="${x}"]`);
             target.innerHTML = val;
             target.style.color = 'black';
             target.style.fontSize = '16px';
@@ -83,7 +84,7 @@ const setupWalk = engine => {
         setText(h3, 3);
 
         const container = document.createElement('div');
-        engine.renderer.element.appendChild(container);
+        dom.appendChild(container);
         const makeButton = (label, onclick) => {
             const btn = document.createElement('button');
             btn.onclick = onclick;

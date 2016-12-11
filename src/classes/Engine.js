@@ -9,7 +9,7 @@ import DomRenderer from './renderer/DomRenderer';
 import {EventEmitterMixin} from '../utils/event';
 
 const rendererMap = {
-    console: ConsoleRenderer,
+    // console: ConsoleRenderer,    // Disabled for now
     dom: DomRenderer,
 };
 
@@ -25,8 +25,15 @@ type engineOptions = {
 export default class Engine {
 
     world: World;
-    renderer: AbstractRenderer;
+    renderer: DomRenderer | ConsoleRenderer;
     options: engineOptions;
+
+    // TODO: EventEmitter - can't make Flow understand mixins :|
+    _eventListeners: Object;
+    on: (string, Function) => void;
+    off: (string, Function) => void;
+    trigger: (string) => void;
+    // trigger: (string, Array<mixed>) => void;
 
     constructor (options:engineOptions) {
         EventEmitterMixin(this);

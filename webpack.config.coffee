@@ -1,4 +1,5 @@
 
+fs = require 'fs'
 path = require 'path'
 
 cssLoader = 'style!css?module&localIdentName=[path][name]---[local]';
@@ -11,9 +12,7 @@ loaders =
             path.resolve __dirname, 'test'
         ]
         exclude: /node_modules/
-        query:
-            # plugins: ['transform-runtime']
-            presets: ['es2015', 'stage-0', 'react']
+        query: JSON.parse('' + fs.readFileSync '.babelrc')
     'coffee': 'coffee'
     'json': 'json'
     'html': 'html'

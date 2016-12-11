@@ -7,9 +7,7 @@ import {move, get_distance, pos_equal} from 'utils/path';
 
 import AStar from 'javascript-astar';
 
-type behavior =
-    | 'wander'
-    | 'target';
+type behavior = 'wander' | 'target';
 
 export default class Unit extends Entity {
 
@@ -68,7 +66,9 @@ export default class Unit extends Entity {
             return console.warn(`[Unit] Not a road: [${next[0]}, ${next[1]}]`)
         }
         this.pos = next;
-        ++this.target.index;
+        this.target = Object.assign({}, this.target, {
+            index: index + 1,
+        });
     }
 
     moveTo (pos: Coordinate) : boolean {
