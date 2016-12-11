@@ -6,6 +6,8 @@ import type AbstractRenderer from './renderer/AbstractRenderer';
 import ConsoleRenderer from './renderer/ConsoleRenderer';
 import DomRenderer from './renderer/DomRenderer';
 
+import {EventEmitterMixin} from '../utils/event';
+
 const rendererMap = {
     console: ConsoleRenderer,
     dom: DomRenderer,
@@ -27,6 +29,8 @@ export default class Engine {
     options: engineOptions;
 
     constructor (options:engineOptions) {
+        EventEmitterMixin(this);
+
         this.options = options;
         this.world = new World(options.world.width, options.world.height);
 
@@ -75,11 +79,13 @@ export default class Engine {
 
     step ({render = true} : {render: bool} = {}) {
         this.world.step();
+        this.trigger('step');
         if (render) this.render();
     }
 
     render () {
         this.renderer.render();
+        this.trigger('render');
     }
 
 }

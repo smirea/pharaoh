@@ -14,7 +14,7 @@ declare type Stats = $Shape<{
 declare interface WorldItem {
     UID: string;
     on_add_to_world (World, Coordinate) : void;
-}
+};
 
 declare interface WorldItemConstructor {
     COLOR: string;
@@ -24,4 +24,14 @@ declare interface WorldItemConstructor {
     constructor (World, Coordinate) : any;
 
     can_add_to_world (World, Coordinate) : boolean;
-}
+};
+
+declare interface EventEmitter {
+    _eventListeners: Object;
+
+    on (string, function) : () => void;
+
+    off (string, function) : void;
+
+    trigger (string, Array<mixed>) : void;
+};
