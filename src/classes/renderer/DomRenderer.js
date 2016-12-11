@@ -24,11 +24,13 @@ export default class DomRenderer extends AbstractRenderer {
     paint () {
         const {world} = this.engine;
 
-        const createCell = (bg: string, content: string) => {
+        const createCell = (bg: string, content: string, row: number, col: number) => {
             const result = document.createElement('div');
             result.classList.add('world-cell');
             result.style.backgroundColor = bg;
             result.innerHTML = content;
+            result.dataset.row = '' + row;
+            result.dataset.column = '' + col;
             return result;
         }
 
@@ -64,7 +66,7 @@ export default class DomRenderer extends AbstractRenderer {
                     }
                 }
 
-                rowElem.appendChild(createCell(bg, '' + content));
+                rowElem.appendChild(createCell(bg, '' + content, row, col));
             }
             this.element.appendChild(rowElem);
         }

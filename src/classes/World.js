@@ -52,7 +52,7 @@ export default class World {
         ];
     }
 
-    add (klass: Class<Tile | Entity>, pos: Coordinate) {
+    add (klass: Class<Tile | Entity>, pos: Coordinate) : Tile | Entity {
         const instance = new klass(this, pos);
         let layer = null;
         for (let index = this.layers.length - 1; index >= 0; --index) {
@@ -62,6 +62,7 @@ export default class World {
         if (!layer) throw new Error('Cannot add instance to any layer');
         layer.add(pos, instance);
         instance.on_add_to_world();
+        return instance;
     }
 
     removeEntity (instance: Entity) {

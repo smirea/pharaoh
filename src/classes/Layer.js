@@ -6,6 +6,8 @@ import Road from './infrastructure/Road';
 import Building from './Building';
 import Unit from './Unit';
 
+import {Graph} from '../lib/AStar';
+
 type layerEnum = 'tile' | 'nature' | 'building' | 'unit';
 
 export default class Layer<T: Entity | Tile> {
@@ -57,7 +59,7 @@ export default class Layer<T: Entity | Tile> {
         return this.map[y][x];
     }
 
-    add ([x, y]: Coordinate, instance: T) {
+    add ([x, y]: Coordinate, instance: T) : void {
         const {WIDTH, HEIGHT, name} = instance.constructor;
 
         if (!this.can_contain(instance)) {
@@ -92,7 +94,28 @@ export class TileLayer extends Layer<Tile> {
 }
 
 export class NatureLayer extends Layer<Road> {
+    // Used in movement
+    roadMatrix: Array<Array<0 | 1>>;
+    roadGraph: Graph;
+
+    constructor (...args: any) {
+        super(...args);
+        this.roadMatrix = (new Array(this.height)).fill(null).map(() => (new Array(this.width)).fill(0));
+    }
+
     can_contain (instance: any) { return instance && instance instanceof Road; }
+
+    add (pos: Coordinate, instance: Road) {
+        super.add(pos, instance);
+
+        if (!instance || instance instanceof Road) {
+            const [x, y] = pos;
+            this.roadMatrix[y][x] = !!instance ? 1 : 0;
+            this.refreshRoadGraph();
+        }
+    }
+
+    refreshRoadGraph () { this.roadGraph = new Graph(this.roadMatrix); }
 }
 
 export class BuildingLayer extends Layer<Building> {

@@ -23,3 +23,6 @@ export const move = ([x, y]:Coordinate, direction:number, size:number = 1) : Coo
 export const get_distance = ([aX, aY]:Coordinate, [bX, bY]:Coordinate) : number => {
     return Math.abs(aX - bX) + Math.abs(aY - bY);
 }
+
+export const pos_equal = ([aX, aY]: Coordinate, [bX, bY]: Coordinate) =>
+    aX === bX && aY === bY;

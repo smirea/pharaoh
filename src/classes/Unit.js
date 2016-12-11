@@ -3,7 +3,9 @@
 import Entity from 'classes/Entity';
 import Road from 'classes/infrastructure/Road';
 import {DIR} from 'utils/constants';
-import {move, get_distance} from 'utils/path';
+import {move, get_distance, pos_equal} from 'utils/path';
+
+import AStar from '../lib/AStar';
 
 type behavior =
     | 'wander'
@@ -17,7 +19,11 @@ export default class Unit extends Entity {
 
     direction: number;
     behavior: behavior = 'wander';
-    target: ?Entity = null;
+    target: ?{
+        destination: Coordinate,
+        path: Array<Coordinate>,
+        index: number,
+    } = null;
 
     is_road (pos:Coordinate) : boolean {
         if (this.world.is_out_of_bounds(pos)) return false;
@@ -43,7 +49,48 @@ export default class Unit extends Entity {
     }
 
     move () {
-        this.pos = move(this.pos, this.direction);
+        if (this.behavior == 'wander') this._moveWander();
+        else this._moveTarget();
+    }
+
+    _moveWander () { this.pos = move(this.pos, this.direction); }
+
+    _moveTarget () {
+        if (!this.target) throw new Error('[Unit] No target');
+
+        const {destination, index, path} = this.target;
+        if (index >= path.length || pos_equal(destination, this.pos)) {
+            return this._moveWander();
+        }
+        const next = path[index];
+        if (!this.is_road(next)) {
+            this.behavior = 'wander';
+            return console.warn(`[Unit] Not a road: [${next[0]}, ${next[1]}]`)
+        }
+        this.pos = next;
+        ++this.target.index;
+    }
+
+    moveTo (pos: Coordinate) : boolean {
+        if (this.world.is_out_of_bounds(pos)) throw new Error('[Unit] Out of bounds');
+        if (pos_equal(this.pos, pos)) return true;
+
+        const graph = this.world.layer_map.nature.roadGraph;
+        const start = graph.grid[this.pos[1]][this.pos[0]];
+        const end = graph.grid[pos[1]][pos[0]];
+        const path = AStar.astar.search(graph, start, end).map(({x, y}) => [y, x]);
+
+        if (!path || !path.length) {
+            console.warn(`[Unit] ${this.constructor.name} No path found to [${pos[0]}, ${pos[1]}]`);
+            return false;
+        }
+        this.behavior = 'target';
+        this.target = {
+            destination: Array.from(pos),
+            path,
+            index: 0,
+        };
+        return true;
     }
 
     apply_effects () {

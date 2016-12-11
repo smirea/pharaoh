@@ -1,4 +1,3 @@
-
 import Entity from 'classes/Entity';
 import World from 'classes/World';
 

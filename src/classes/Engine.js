@@ -56,26 +56,26 @@ export default class Engine {
             return elem;
         }
 
-        let interval = null;
-        const step = () => this.step();
-        const stop = () => interval != null ? clearInterval(interval) : null;
-        const run = () => {
-            stop();
-            interval = setInterval(step, 200);
-        };
-
         const container = document.createElement('div');
         container.classList.add('actions');
         root.appendChild(container);
 
-        container.appendChild(btn('step', step));
-        container.appendChild(btn('run', run));
-        container.appendChild(btn('stop', stop));
+        container.appendChild(btn('step', () => this.step()));
+        container.appendChild(btn('run', () => this.start()));
+        container.appendChild(btn('stop', () => this.stop()));
     }
 
-    start () {}
+    _interval: ?number;
 
-    stop () {}
+    start () {
+        this.stop();
+        this._interval = setInterval(() => this.step(), 200);
+    }
+
+    stop () {
+        if (this._interval == null) return;
+        clearInterval(this._interval);
+    }
 
     step ({render = true} : {render: bool} = {}) {
         this.world.step();
