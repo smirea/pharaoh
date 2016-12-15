@@ -22,4 +22,6 @@ export default class Tile {
     }
 
     on_add_to_world (world:any, pos: any) : void {}
+
+    step () {}
 }

@@ -40,17 +40,84 @@ export default class Entity {
 
     on_remove_from_world () : void {}
 
+    step () : void {}
+
     add_stat (stat:$Keys<Stats>, value:number) {
         this.stats[stat] += value;
     }
 
-    each_adjacent (size:number = 1, callback:(x:number, y:number) => ?boolean) : void {
+    /**
+     * Calls a callback on each neighboring coordinate
+     * Callbacks are called clockwise from top-left
+     *
+     * x - origin
+     * @ - callback([x, y])
+     *
+     *    0 1 2 3 4 5
+     *  0 . . . . . .
+     *  1 . . @ @ . .
+     *  2 . @ x x @ .
+     *  3 . . @ @ . .
+     *  4 . . . . . .
+     *
+     */
+    each_vicinity (callback:(x:number, y:number) => ?boolean) : void {
         const {WIDTH, HEIGHT} = this.constructor;
         const [x, y] = this.pos;
-        const start_row = Math.max(0, y - size);
-        const end_row = Math.min(this.world.height, y + HEIGHT + size);
-        const start_col = Math.max(0, x - size);
-        const end_col = Math.min(this.world.width, x + WIDTH + size);
+
+        // Top row
+        if (y - 1 >= 0) {
+            for (let index = x; index < x + WIDTH; ++index) {
+                if (callback(index, y - 1) === false) return;
+            }
+        }
+
+        // Right Column
+        if (x + WIDTH < this.world.width) {
+            for (let index = y; index < y + HEIGHT; ++index) {
+                if (callback(x + WIDTH, index) === false) return;
+            }
+        }
+
+        // Bottom Row
+        if (y + HEIGHT < this.world.height) {
+            for (let index = x + WIDTH - 1; index >= x; --index) {
+                if (callback(index, y + HEIGHT) === false) return;
+            }
+        }
+
+        // Left Column
+        if (x - 1 >= 0) {
+            for (let index = y + HEIGHT - 1; index >= y; --index) {
+                if (callback(x - 1, index) === false) return;
+            }
+        }
+    }
+
+    /**
+     * Calls a callback on each coordinate in a given radius
+     *
+     * x - origin
+     * @ - callback([x, y])
+     *
+     * radius = 1
+     *
+     *    0 1 2 3 4 5
+     *  0 . . . . . .
+     *  1 . @ @ @ @ .
+     *  2 . @ x x @ .
+     *  3 . @ @ @ @ .
+     *  4 . . . . . .
+     *
+     */
+    each_adjacent_aura (radius:number = 1, callback:(x:number, y:number) => ?boolean) : void {
+        const {WIDTH, HEIGHT} = this.constructor;
+        const [x, y] = this.pos;
+        const start_row = Math.max(0, y - radius);
+        const end_row = Math.min(this.world.height, y + HEIGHT + radius);
+        const start_col = Math.max(0, x - radius);
+        const end_col = Math.min(this.world.width, x + WIDTH + radius);
+
         outer: for (let row = start_row; row < end_row; ++row) {
             for (let col = start_col; col < end_col; ++col) {
                 if (col < x || col >= x + WIDTH || row < y || row >= y + HEIGHT) {

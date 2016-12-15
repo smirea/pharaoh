@@ -97,9 +97,8 @@ export default class World {
     }
 
     step () {
-        this.layer_map.unit.list.forEach((unit) => {
-            unit.step();
-        });
+        this.layer_map.building.list.forEach(building => building.step());
+        this.layer_map.unit.list.forEach(unit => { unit.step(); });
     }
 
 }

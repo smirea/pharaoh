@@ -7,6 +7,8 @@ import {move, get_distance, pos_equal} from 'utils/path';
 
 import AStar from 'javascript-astar';
 
+import type Building from './Building';
+
 type behavior = 'wander' | 'target';
 
 export default class Unit extends Entity {
@@ -39,7 +41,7 @@ export default class Unit extends Entity {
 
     get_affected_entities () : Array<Entity> {
         const result = [];
-        this.each_adjacent(this.constructor.EFFECT_RADIUS, (x, y) => {
+        this.each_adjacent_aura(this.constructor.EFFECT_RADIUS, (x, y) => {
             const entity = this.world.getBuilding([x, y]);
             if (entity) result.push(entity);
         });
@@ -56,13 +58,19 @@ export default class Unit extends Entity {
     _moveTarget () {
         if (!this.target) throw new Error('[Unit] No target');
 
+        const reset = () => {
+            this.behavior = 'wander';
+            this.target = null;
+        };
+
         const {destination, index, path} = this.target;
         if (index >= path.length || pos_equal(destination, this.pos)) {
+            reset();
             return this._moveWander();
         }
         const next = path[index];
         if (!this.is_road(next)) {
-            this.behavior = 'wander';
+            reset();
             return console.warn(`[Unit] Not a road: [${next[0]}, ${next[1]}]`)
         }
         this.pos = next;
@@ -71,25 +79,64 @@ export default class Unit extends Entity {
         });
     }
 
-    moveTo (pos: Coordinate) : boolean {
-        if (this.world.is_out_of_bounds(pos)) throw new Error('[Unit] Out of bounds');
-        if (pos_equal(this.pos, pos)) return true;
+    _set_path_target (destination: Coordinate, path: Array<Coordinate>) {
+        this.behavior = 'target';
+        this.target = {
+            destination,
+            path,
+            index: 0,
+        };
+    }
 
-        const graph = this.world.layer_map.nature.roadGraph;
+    get_path_to (pos: Coordinate) : ?Array<Coordinate> {
+        if (pos_equal(this.pos, pos)) return [];
+
+        const graph = this.world.layer_map.nature.get_graph();
         const start = graph.grid[this.pos[1]][this.pos[0]];
         const end = graph.grid[pos[1]][pos[0]];
         const path = AStar.astar.search(graph, start, end).map(({x, y}) => [y, x]);
 
-        if (!path || !path.length) {
+        if (!path.length) return null;
+        return path;
+    }
+
+    move_to (pos: Coordinate) : boolean {
+        if (this.world.is_out_of_bounds(pos)) throw new Error('[Unit] Out of bounds');
+        if (pos_equal(this.pos, pos)) return true;
+
+        const path = this.get_path_to(pos);
+
+        if (!path) {
             console.warn(`[Unit] ${this.constructor.name} No path found to [${pos[0]}, ${pos[1]}]`);
             return false;
         }
-        this.behavior = 'target';
-        this.target = {
-            destination: Array.from(pos),
-            path,
-            index: 0,
-        };
+        this._set_path_target(Array.from(pos), path);
+        return true;
+    }
+
+    move_to_building (building: Building) : boolean {
+        const targets = building.get_all_adjacent_roads();
+        if (!targets.length) return false;
+
+        let route = null;
+        for (let road of targets) {
+            const path = this.get_path_to(road.pos);
+            if (!path) continue;
+            if (route && route.path.length <= path.length) continue;
+            route = {pos: road.pos, path};
+        }
+
+        if (!route) {
+            debugger
+            for (let road of targets) {
+                const path = this.get_path_to(road.pos);
+            }
+            console.warn(`[Unit] ${this.constructor.name} No path found to building: ${building.constructor.name}`);
+
+            return false;
+        }
+
+        this._set_path_target(route.pos, route.path);
         return true;
     }
 

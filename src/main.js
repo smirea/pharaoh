@@ -70,11 +70,30 @@ const setupWalk = engine => {
     const h3 = world.add(HouseIndex.SmallHouse, [7, 9]);
     const dom = engine.renderer.element;
 
+    const getCell = ([x, y]: Coordinate) => dom.querySelector(`[data-row="${y}"][data-column="${x}"]`);
+
+    const clearClass = name =>
+        dom.querySelectorAll('.' + name).forEach(elem => elem.classList.remove(name));
+
+    const paint = () => {
+        clearClass('world-cell-highlight-path');
+        clearClass('world-cell-highlight-destination');
+        if (unit.target) {
+            for (let pos of unit.target.path) {
+                getCell(pos).classList.add('world-cell-highlight-path');
+            }
+            getCell(unit.target.destination).classList.add('world-cell-highlight-destination');
+        }
+    }
+
+    const fc = ([x, y]) => `[${x} ${y}]`;
+
     engine.on('render', () => {
+        paint();
+
         const setText = (cell: any, val) => {
-            const [x, y] = cell.pos;
             if (!engine.renderer.element) return;
-            const target = dom.querySelector(`[data-row="${y}"][data-column="${x}"]`);
+            const target = getCell(cell.pos);
             target.innerHTML = val;
             target.style.color = 'black';
             target.style.fontSize = '16px';
@@ -92,19 +111,19 @@ const setupWalk = engine => {
             container.appendChild(btn);
         };
 
-        const moveToBuilding = ({pos: [x, y]}:Building) => {
-            const layer = engine.world.layer_map.nature;
-            const clone = JSON.parse(JSON.stringify(layer.roadMatrix));
-            clone[y][x] = 1;
-            layer.roadMatrix = clone;
-            layer.refreshRoadGraph();
-            if (!unit.moveTo([x, y])) return;
-            engine.start();
+        const move_to_building = (building:Building) => {
+            if (!unit.move_to_building(building)) return;
+            console.info('destination: %s\npath: %s',
+                fc(unit.target.destination),
+                unit.target.path.map(fc).join(' ')
+            );
+            paint();
+            // engine.start();
         };
 
-        makeButton('move to 1', () => moveToBuilding(h1));
-        makeButton('move to 2', () => moveToBuilding(h2));
-        makeButton('move to 3', () => moveToBuilding(h3));
+        makeButton('move to 1', () => move_to_building(h1));
+        makeButton('move to 2', () => move_to_building(h2));
+        makeButton('move to 3', () => move_to_building(h3));
     });
 
 };

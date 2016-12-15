@@ -14,6 +14,8 @@ declare type Stats = $Shape<{
 declare interface WorldItem {
     UID: string;
     on_add_to_world (World, Coordinate) : void;
+
+    step () : void;
 };
 
 declare interface WorldItemConstructor {

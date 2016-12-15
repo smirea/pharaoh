@@ -32,8 +32,7 @@ export default class Engine {
     _eventListeners: Object;
     on: (string, Function) => void;
     off: (string, Function) => void;
-    trigger: (string) => void;
-    // trigger: (string, Array<mixed>) => void;
+    trigger: (string, args:?Array<mixed>) => void;
 
     constructor (options:engineOptions) {
         EventEmitterMixin(this);

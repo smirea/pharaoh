@@ -110,12 +110,15 @@ export class NatureLayer extends Layer<Road> {
 
         if (!instance || instance instanceof Road) {
             const [x, y] = pos;
+            // this.roadMatrix = JSON.parse(JSON.stringify(this.roadMatrix));
             this.roadMatrix[y][x] = !!instance ? 1 : 0;
-            this.refreshRoadGraph();
+            this.refresh_road_graph();
         }
     }
 
-    refreshRoadGraph () { this.roadGraph = new Graph(this.roadMatrix); }
+    get_graph () { return new Graph(this.roadMatrix); }
+
+    refresh_road_graph () { this.roadGraph = this.get_graph(); }
 }
 
 export class BuildingLayer extends Layer<Building> {
