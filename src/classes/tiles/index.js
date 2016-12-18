@@ -6,7 +6,7 @@ import {getUID} from '../../utils/utils';
 
 (x: Tile) => (x: WorldItem);
 (x: Class<Tile>) => (x: WorldItemConstructor);
-export default class Tile {
+export class Tile {
     static COLOR = 'black';
     static WIDTH = 1;
     static HEIGHT = 1;
@@ -24,4 +24,8 @@ export default class Tile {
     on_add_to_world (world:any, pos: any) : void {}
 
     step () {}
+}
+
+export class DirtTile extends Tile {
+    static COLOR = 'white';
 }

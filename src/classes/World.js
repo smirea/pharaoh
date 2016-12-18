@@ -3,10 +3,10 @@
 import type Building from './Building';
 import type Entity from 'classes/Entity';
 import type Road from './infrastructure/Road';
-import type Tile from './tiles/Tile';
+import type {Tile} from './tiles';
 
 import Unit from './Unit';
-import DirtTile from 'classes/tiles/DirtTile';
+import {DirtTile} from 'classes/tiles';
 import Layer, {TileLayer, NatureLayer, BuildingLayer, UnitLayer} from './Layer';
 
 import {DIR} from 'utils/constants';

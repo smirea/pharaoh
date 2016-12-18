@@ -1,7 +1,7 @@
 /* @flow */
 
 import Entity from './Entity';
-import Tile from './tiles/Tile';
+import {Tile} from './tiles';
 import Road from './infrastructure/Road';
 import Building from './Building';
 import Unit from './Unit';
