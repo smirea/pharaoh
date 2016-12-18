@@ -30,4 +30,4 @@ module.system.node.resolve_dirname=node_modules
 module.system.node.resolve_dirname=src
 
 [version]
-0.36.0
+0.37.0
